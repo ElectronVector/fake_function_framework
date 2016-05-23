@@ -64,10 +64,8 @@
 
 :plugins:
   :load_paths:
-    # Use the installed Ceedling gem.
-    - "#{Ceedling.load_path}"
-    # This is where we can find *this* fake_function_framework plug-in.
-    - "../../.."
+    # This change from the default is for running Ceedling out of another folder.
+    - ../../../../plugins
   :enabled:
     - stdout_pretty_tests_report
     - module_generator
