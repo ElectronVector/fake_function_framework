@@ -15,15 +15,15 @@ The easiest way to get the source is to just clone this repo into the Ceedling p
 (Don't have a Ceedling project already? [Here are instructions to create one.](http://www.electronvector.com/blog/try-embedded-test-driven-development-right-now-with-ceedling))
 From within `<your-project>/vendor/ceedling/plugins`, run:
 
-`git clone https://github.com/ElectronVector/ceedling-fff-plugin.git`
+`git clone https://github.com/ElectronVector/fake_function_framework.git`
 
-This will create a new folder named `ceedling-fff-plugin` in the plugins folder.
+This will create a new folder named `fake_function_framework` in the plugins folder.
 
 ### Enable the plug-in.
 
 The plug-in is enabled from within your project.yml file.
 
-In the `:plugins` configuration, add `ceedling-fff-plugin` to the list of enabled plugins:
+In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins:
 
 ```yaml
 :plugins:
@@ -32,7 +32,7 @@ In the `:plugins` configuration, add `ceedling-fff-plugin` to the list of enable
   :enabled:
     - stdout_pretty_tests_report
     - module_generator
-    - ceedling-fff-plugin
+    - fake_function_framework
 ```
 *Note that you could put the plugin source in some other loaction.
 In that case you'd need to add a new path the `:load_paths`.*
@@ -239,8 +239,13 @@ Use still use some of the CMock configuration options for setting things like th
 
 ## Running the tests
 
-There are unit and integration tests for the plug-in itself. These are run with the default `rake` task.
+There are unit and integration tests for the plug-in itself.
+These are run with the default `rake` task.
+The integration test runs the tests for the example project in examples/fff_example.
+This example uses the installed gem version of Ceedling.
 
 ## More examples
 
-There is an example project in examples/fff_example. It shows how to use the plug-in with some full-size examples.
+There is an example project in examples/fff_example.
+It shows how to use the plug-in with some full-size examples.
+Note that this example uses the installed gem version of Ceedling (which must be installed).
