@@ -25,12 +25,10 @@
 :paths:
   :test:
     - +:test/**
-    - -:test/support
   :source:
     - src/**
   :support:
-    - test/support
-
+      
 :defines:
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section
