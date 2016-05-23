@@ -242,10 +242,9 @@ Use still use some of the CMock configuration options for setting things like th
 There are unit and integration tests for the plug-in itself.
 These are run with the default `rake` task.
 The integration test runs the tests for the example project in examples/fff_example.
-This example uses the installed gem version of Ceedling.
+For the integration tests to succeed, this repository must be placed in a Ceedling tree in the plugins folder.
 
 ## More examples
 
 There is an example project in examples/fff_example.
 It shows how to use the plug-in with some full-size examples.
-Note that this example uses the installed gem version of Ceedling (which must be installed).
