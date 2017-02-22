@@ -252,6 +252,24 @@ describe "FffMockGenerator.create_mock_header" do
       )
     end
   end
+  
+  context "when there is a function that returns a const int" do
+    let(:mock_header){
+      parsed_header = {}
+      parsed_header[:functions] = [{
+        :name => "return_const_int_test_function",
+        :modifier => "const",
+        :return => {:type => "int" },
+        :args => []
+      }]
+      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
+    }
+    it "then the generated file contains the correct const return value in the declaration" do
+      expect(mock_header).to include(
+        "DECLARE_FAKE_VALUE_FUNC0(const int, return_const_int_test_function)"
+      )
+    end
+  end
 
   context "when there are pre-includes" do
     let(:mock_header) {
