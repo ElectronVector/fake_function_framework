@@ -38,7 +38,7 @@ class FffMockGenerator
   private
 
 # Header file generation functions.
-
+  
   def self.write_opening_include_guard(mock_name, output)
     output.puts "#ifndef #{mock_name}_H"
     output.puts "#define #{mock_name}_H"
@@ -46,7 +46,12 @@ class FffMockGenerator
 
   def self.write_header_includes(module_name, output)
     output.puts %{#include "fff.h"}
-    output.puts %{#include "fff_unity_helper.h"}
+    framework = if (PLUGINS_ENABLED.include?('Catch_4_Ceedling'))
+      'catch'
+    else
+      'unity'
+    end
+    output.puts %{#include "fff_#{framework}_helper.h"}
     output.puts %{#include "#{module_name}.h"}
   end
 
