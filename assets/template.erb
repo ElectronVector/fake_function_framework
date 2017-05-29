@@ -5,16 +5,37 @@
 #include "catch.hpp"
 
 /* Declare structs for all fakes */
-<% for fun in @mocked_functions.values %>
-struct <%= fun[:name] %>_Fake;
-<% end %>
+<% for decl in @decls -%>
+<%= decl %>
+<% end -%>
 
 struct FakeMagnet {
     unsigned int call_count;
-<% for fun in @mocked_functions.values %>
-    FakeMagnet(const struct <%= fun[:name] %>_Fake& from): call_count(from.call_count) {}
-<% end %>
+    unsigned int arg_history_len;
+    unsigned int arg_histories_dropped;
+<% for fun in @mock_functions -%>
+    FakeMagnet(const <%= fun[:name] %>_Fake& from): call_count(from.call_count), arg_history_len(from.arg_history_len), arg_histories_dropped(arg_histories_dropped) {}
+<% end -%>
+
+    std::string toString() const {
+		std::ostringstream ss;
+        ss << "(" << call_count << ")";
+        return ss.str();
+	}
+
+    std::ostream& operator<< ( std::ostream& outs ) {
+	    return outs << "Callcount: " << this->call_count;
+    }
+
 };
+
+#ifndef FAKE_MAGNET_OP
+#define FAKE_MAGNET_OP
+inline std::ostream& operator << ( std::ostream& os, FakeMagnet const& value ) {
+	return os << "Callcount: " << value.call_count;
+}
+#endif
+
 
 /* The matcher class */
 struct FakeCalledRange : public Catch::MatcherBase<FakeMagnet> {
@@ -46,7 +67,7 @@ public:
 
     virtual std::string describe() const {
         std::ostringstream ss;
-        ss << "is called " << m_times << "times";
+        ss << "is called " << m_times << " times";
         return ss.str();
     }
 };
@@ -80,6 +101,9 @@ inline FakeCalledTimes IsNotCalled() {
  */
 #define CHECK_THAT_F(function_, matcher)                CHECK_THAT(function_ ## _fake, matcher)
 #define REQUIRE_THAT_F(function_, matcher)              REQUIRE_THAT(function_ ## _fake, matcher)
+//#define CHECK_THAT_F(function_, matcher)                FakeMagnet function_ ## _fakeMagnet(function_ ## _fake); CHECK_THAT(function_ ## _fakeMagnet, matcher)
+//#define REQUIRE_THAT_F(function_, matcher)              FakeMagnet function_ ## _fakeMagnet(function_ ## _fake); REQUIRE_THAT(function_ ## _fakeMagnet, matcher)
+
 
 /* 
  *  ORDERINGS

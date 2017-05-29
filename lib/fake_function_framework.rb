@@ -11,11 +11,16 @@ class FakeFunctionFramework < Plugin
     puts "Using fake function framework (fff)..."
 
     # Switch out the cmock_builder with our own.
-    @ceedling[:cmock_builder].cmock = FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
+    own_cmock =FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
+    @ceedling[:cmock_builder].cmock = own_cmock
     
     # Add the path to fff.h to the include paths.
     COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/vendor/fff"
     COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/src"
+
+    helper = File.join( own_cmock.get_mock_path, 'fff_catch_helper.h')
+    FileUtils.mkdir_p own_cmock.get_mock_path unless File.file?(helper)
+    FileUtils.touch(helper)
   end
 
   def post_runner_generate(arg_hash)
@@ -61,6 +66,7 @@ class FffMockGeneratorForCMock
       # If a subdirectory has been configured, append it to the mock path.
       mock_path = "#{mock_path}/#{@cm_config.subdir}"
     end
+    mock_path
   end
 
   def generate_mock (header_file_to_mock)
@@ -99,11 +105,18 @@ class FffMockGeneratorForCMock
   def generate_helper(plugin_root)
     is_catch_enabled = PLUGINS_ENABLED.include?('Catch_4_Ceedling')
     if (is_catch_enabled)
-      # template_data = CatchHelperTemplateData.new(@mocked_functions.values)
+      template_data = CatchHelperTemplateData.new(@mocked_functions.values)
       impl_template = File.read( File.join( plugin_root, 'assets/template.erb') )
-      renderer = ERB.new(impl_template)
-      File.open(File.join( get_mock_path, 'fff_catch_helper.h'), 'w') {|f| f.puts renderer.result(binding) }
+      renderer = ERB.new(impl_template, nil, '-')
+
+      File.open(File.join( get_mock_path, 'fff_catch_helper.h'), 'w') {|f| f.puts renderer.result(template_data.get_binding) }
     end
+  end
+
+  private
+
+  def get_mocked_functions
+    @mocked_functions.values.flat_map{|val| val[:functions]}
   end
 end
 
@@ -111,10 +124,13 @@ end
 class CatchHelperTemplateData
   @mocks = nil
   @mock_functions = nil
+  @decl_string = ''
   def initialize(mocks)
     @mocks = mocks
     
-    @mock_functions = @mocks.flat_map {|k,v| v[:functions]}
+    @mock_functions = @mocks.flat_map{|val| val[:functions]}
+
+    @decls = FffMockGenerator.write_function_macros_pure('DECLARE', @mock_functions)
   end
 
   def get_binding
