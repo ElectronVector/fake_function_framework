@@ -1,5 +1,6 @@
 require 'ceedling/plugin'
 require 'fff_mock_generator'
+require 'erb'
 
 class FakeFunctionFramework < Plugin
 
@@ -27,6 +28,8 @@ class FakeFunctionFramework < Plugin
       f.puts %{#include "fff.h"}
       f.puts "DEFINE_FFF_GLOBALS;"
     end
+    
+    cmock = @ceedling[:cmock_builder].cmock.generate_helper(@plugin_root)
   end
 
 end # class FakeFunctionFramework
@@ -37,7 +40,7 @@ class FffMockGeneratorForCMock
     @cm_config      = CMockConfig.new(options)
     @cm_parser      = CMockHeaderParser.new(@cm_config)
     @silent        = (@cm_config.verbosity < 2)
-    @mocked_functions = []
+    @mocked_functions = {}
 
     # These are the additional files to include in the mock files.
     @includes_h_pre_orig_header  = (@cm_config.includes || @cm_config.includes_h_pre_orig_header || []).map{|h| h =~ /</ ? h : "\"#{h}\""}
@@ -52,20 +55,28 @@ class FffMockGeneratorForCMock
     end
   end
 
+  def get_mock_path()
+    mock_path = @cm_config.mock_path
+    if @cm_config.subdir
+      # If a subdirectory has been configured, append it to the mock path.
+      mock_path = "#{mock_path}/#{@cm_config.subdir}"
+    end
+  end
+
   def generate_mock (header_file_to_mock)
       module_name = File.basename(header_file_to_mock, '.h')
       puts "Creating mock for #{module_name}..." unless @silent
       mock_name = @cm_config.mock_prefix + module_name + @cm_config.mock_suffix
-      mock_path = @cm_config.mock_path
-      if @cm_config.subdir
-          # If a subdirectory has been configured, append it to the mock path.
-          mock_path = "#{mock_path}/#{@cm_config.subdir}"
-      end
+      
+      mock_path = get_mock_path()
       full_path_for_mock = "#{mock_path}/#{mock_name}"
 
       # Parse the header file so we know what to mock.
       parsed_header = @cm_parser.parse(module_name, File.read(header_file_to_mock))
-      @mocked_functions += parsed_header[:functions]
+      
+      # Export parse results pers module.
+      @mocked_functions[mock_name] = parsed_header
+      
       # Create the directory if it doesn't exist.
       mkdir_p full_path_for_mock.pathmap("%d")
 
@@ -83,6 +94,31 @@ class FffMockGeneratorForCMock
         f.write(FffMockGenerator.create_mock_source(mock_name, parsed_header,
           @includes_c_pre_orig_header, @includes_c_post_orig_header))
       end
+  end
+
+  def generate_helper(plugin_root)
+    is_catch_enabled = PLUGINS_ENABLED.include?('Catch_4_Ceedling')
+    if (is_catch_enabled)
+      # template_data = CatchHelperTemplateData.new(@mocked_functions.values)
+      impl_template = File.read( File.join( plugin_root, 'assets/template.erb') )
+      renderer = ERB.new(impl_template)
+      File.open(File.join( get_mock_path, 'fff_catch_helper.h'), 'w') {|f| f.puts renderer.result(binding) }
+    end
+  end
+end
+
+
+class CatchHelperTemplateData
+  @mocks = nil
+  @mock_functions = nil
+  def initialize(mocks)
+    @mocks = mocks
+    
+    @mock_functions = @mocks.flat_map {|k,v| v[:functions]}
+  end
+
+  def get_binding
+    binding
   end
 
 end

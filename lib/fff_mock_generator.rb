@@ -1,5 +1,7 @@
 # Creates mock files from parsed header files that can be linked into applications.
 # The mocks created are compatible with CMock for use with Ceedling.
+require 'fileutils'
+require 'erb'
 
 class FffMockGenerator
 
@@ -38,7 +40,7 @@ class FffMockGenerator
   private
 
 # Header file generation functions.
-  
+
   def self.write_opening_include_guard(mock_name, output)
     output.puts "#ifndef #{mock_name}_H"
     output.puts "#define #{mock_name}_H"
