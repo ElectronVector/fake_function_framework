@@ -22,11 +22,6 @@ struct FakeMagnet {
         ss << "(" << call_count << ")";
         return ss.str();
 	}
-
-    std::ostream& operator<< ( std::ostream& outs ) {
-	    return outs << "Callcount: " << this->call_count;
-    }
-
 };
 
 #ifndef FAKE_MAGNET_OP
@@ -72,7 +67,117 @@ public:
     }
 };
 
+template<typename T>
+class T_Range : public Catch::MatcherBase<T> {
+    T m_begin, m_end;
+public:
+    T_Range( T begin, T end ) : m_begin( begin ), m_end( end ) {}
+
+    virtual bool match( T const& i ) const override {
+        return i >= m_begin && i <= m_end;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is between " << m_begin << " and " << m_end;
+        return ss.str();
+    }
+};
+
+template<typename T>
+class T_EQUAL_TO : public Catch::MatcherBase<T> {
+    T m_value;
+public:
+    T_EQUAL_TO( T value ) : m_value( value ) {}
+
+    virtual bool match( T const& i ) const override {
+        return i == m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is equal to " << m_value;
+        return ss.str();
+    }
+};
+
+template<typename T>
+class T_NOT_EQUAL_TO : public Catch::MatcherBase<T> {
+    T m_value;
+public:
+    T_NOT_EQUAL_TO( T value ) : m_value( value ) {}
+
+    virtual bool match( T const& i ) const override {
+        return i != m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is not equal to " << m_value;
+        return ss.str();
+    }
+};
+
+template<typename T>
+class T_IS_GREATER_THAN : public Catch::MatcherBase<T> {
+    T m_value;
+public:
+    T_IS_GREATER_THAN( T value ) : m_value( value ) {}
+
+    virtual bool match( T const& i ) const override {
+        return i > m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is greater than " << m_value;
+        return ss.str();
+    }
+};
+
+template<typename T>
+class T_IS_SMALLER_THAN : public Catch::MatcherBase<T> {
+    T m_value;
+public:
+    T_IS_SMALLER_THAN( T value ) : m_value( value ) {}
+
+    virtual bool match( T const& i ) const override {
+        return i < m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is smaller than " << m_value;
+        return ss.str();
+    }
+};
+
 // The builder functions
+template<typename T>
+inline T_Range<T> IsBetween( T begin, T end ) {
+    return T_Range<T>( begin, end );
+}
+
+template<typename T>
+inline T_EQUAL_TO<T> IsEqualTo( T value ) {
+    return T_EQUAL_TO<T>( value );
+}
+
+template<typename T>
+inline T_NOT_EQUAL_TO<T> IsNotEqualTo( T value ) {
+    return T_NOT_EQUAL_TO<T>( value );
+}
+
+template<typename T>
+inline T_IS_GREATER_THAN<T> IsGreaterThan( T value ) {
+    return T_IS_GREATER_THAN<T>( value );
+}
+
+template<typename T>
+inline T_IS_SMALLER_THAN<T> IsSmallerThan( T value ) {
+    return T_IS_SMALLER_THAN<T>( value );
+}
+
 inline FakeCalledRange IsCalledBetween( unsigned int begin, unsigned int end ) {
     return FakeCalledRange{begin, end};
 }
@@ -95,14 +200,20 @@ inline FakeCalledTimes IsNotCalled() {
  *  FFF helper macros for Catch.
  */
 
+/*
+ * SETTERS
+ */
+ #define SET_RETURN(function_, value_)    function_ ## _fake.return_val = (value_)
+ #define SET_RETURNS(function_, array_)   SET_RETURN_SEQ(function, (array_).data(), (array_).size())
 
 /*
  *  MATCHERS 
  */
-#define CHECK_THAT_F(function_, matcher)                CHECK_THAT(function_ ## _fake, matcher)
-#define REQUIRE_THAT_F(function_, matcher)              REQUIRE_THAT(function_ ## _fake, matcher)
-//#define CHECK_THAT_F(function_, matcher)                FakeMagnet function_ ## _fakeMagnet(function_ ## _fake); CHECK_THAT(function_ ## _fakeMagnet, matcher)
-//#define REQUIRE_THAT_F(function_, matcher)              FakeMagnet function_ ## _fakeMagnet(function_ ## _fake); REQUIRE_THAT(function_ ## _fakeMagnet, matcher)
+#define CHECK_THAT_F(function_, matcher_)                CHECK_THAT(function_ ## _fake, matcher_)
+#define REQUIRE_THAT_F(function_, matcher_)              REQUIRE_THAT(function_ ## _fake, matcher_)
+
+#define CHECK_CALLCOUNT(function_, matcher_)             CHECK_THAT(function_ ## _fake.call_count, matcher_)
+#define REQUIRE_CALLCOUNT(function_, matcher_)             CHECK_THAT(function_ ## _fake.call_count, matcher_)
 
 
 /* 

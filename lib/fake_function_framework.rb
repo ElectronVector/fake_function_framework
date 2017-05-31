@@ -113,11 +113,6 @@ class FffMockGeneratorForCMock
     end
   end
 
-  private
-
-  def get_mocked_functions
-    @mocked_functions.values.flat_map{|val| val[:functions]}
-  end
 end
 
 
