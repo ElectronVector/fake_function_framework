@@ -41,12 +41,46 @@ public:
 };
 
 template<typename T>
+class T_EQUAL_TO<T*> : public Catch::MatcherBase<const T*> {
+    T* m_value;
+public:
+    T_EQUAL_TO( T* value ) : m_value( value ) {}
+
+    virtual bool match( const T* i ) const override {
+        return i == m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is equal to " << m_value;
+        return ss.str();
+    }
+};
+
+template<typename T>
 class T_NOT_EQUAL_TO : public Catch::MatcherBase<T> {
     T m_value;
 public:
     T_NOT_EQUAL_TO( T value ) : m_value( value ) {}
 
     virtual bool match( T const& i ) const override {
+        return i != m_value;
+    }
+
+    virtual std::string describe() const {
+        std::ostringstream ss;
+        ss << "is not equal to " << m_value;
+        return ss.str();
+    }
+};
+
+template<typename T>
+class T_NOT_EQUAL_TO<T*> : public Catch::MatcherBase<const T*> {
+    T* m_value;
+public:
+    T_NOT_EQUAL_TO( T* value ) : m_value( value ) {}
+
+    virtual bool match( const T* i ) const override {
         return i != m_value;
     }
 
