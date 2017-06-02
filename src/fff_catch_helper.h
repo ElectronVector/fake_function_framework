@@ -1,6 +1,7 @@
 #ifndef fff_catch_helper_H
 #define fff_catch_helper_H
 
+#include "catch.hpp"
 /*
  *  FFF helper macros && matchers for Catch.
  */
@@ -114,23 +115,6 @@ inline T_IS_GREATER_THAN<T> IsGreaterThan( T value ) {
 template<typename T>
 inline T_IS_SMALLER_THAN<T> IsSmallerThan( T value ) {
     return T_IS_SMALLER_THAN<T>( value );
-}
-
-inline FakeCalledRange IsCalledBetween( unsigned int begin, unsigned int end ) {
-    return FakeCalledRange{begin, end};
-}
-
-inline FakeCalledTimes IsCalled(unsigned int times) {
-    return FakeCalledTimes{times};
-}
-
-
-inline FakeCalledTimes IsCalledOnce() {
-    return FakeCalledTimes{1};
-}
-
-inline FakeCalledTimes IsNotCalled() {
-    return FakeCalledTimes{0};
 }
 
 /*
