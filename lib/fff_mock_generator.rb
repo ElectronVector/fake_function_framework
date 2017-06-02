@@ -4,9 +4,13 @@ require 'fileutils'
 require 'erb'
 
 class FffMockGenerator
+  @@framework = :unity
 
-  def self.create_mock_header(module_name, mock_name, parsed_header, pre_includes=nil,
-    post_includes=nil)
+  def self.set_framework(framework)
+    @@framework = framework
+  end
+
+  def self.create_mock_header(module_name, mock_name, parsed_header, pre_includes=nil, post_includes=nil)
     output = StringIO.new
     write_opening_include_guard(mock_name, output)
     output.puts
@@ -48,12 +52,7 @@ class FffMockGenerator
 
   def self.write_header_includes(module_name, output)
     output.puts %{#include "fff.h"}
-    framework = if (PLUGINS_ENABLED.include?('Catch_4_Ceedling'))
-      'catch'
-    else
-      'unity'
-    end
-    output.puts %{#include "fff_#{framework}_helper.h"}
+    output.puts %{#include "fff_#{@@framework.to_s}_helper.h"}
     output.puts %{#include "#{module_name}.h"}
   end
 
