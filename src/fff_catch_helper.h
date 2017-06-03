@@ -174,7 +174,7 @@ inline IsSmallerThanMatcher<T> IsSmallerThan( T value ) {
  * SETTERS
  */
 #define SET_RETURN(function_, value_)                   function_ ## _fake.return_val = (value_)
-#define SET_RETURNS(function_, array_)                  SET_RETURN_SEQ(function, (array_).data(), (array_).size())
+#define SET_RETURNS(function_, array_)                  SET_RETURN_SEQ(function_, (array_).data(), (array_).size())
 
 
 /* 
