@@ -167,8 +167,8 @@ inline IsSmallerThanMatcher<T> IsSmallerThan( T value ) {
 #define CHECK_CALLCOUNT(function_, matcher_)            CHECK_THAT(function_ ## _fake.call_count, matcher_)
 #define REQUIRE_CALLCOUNT(function_, matcher_)          CHECK_THAT(function_ ## _fake.call_count, matcher_)
 
-#define CHECK_ARG(arg_ function_, matcher_)             CHECK_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
-#define REQUIRE_ARG(arg_ function_, matcher_)           REQUIRE_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
+#define CHECK_ARG(arg_, function_, matcher_)             CHECK_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
+#define REQUIRE_ARG(arg_, function_, matcher_)           REQUIRE_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
 
 /*
  * SETTERS
