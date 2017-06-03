@@ -172,7 +172,7 @@ class FffMockGenerator
       end
 
       # Close the declaration.
-      line.push ');'
+      line.push ')'
       output.push(line.join(''))
       output.push('#endif')
     end
