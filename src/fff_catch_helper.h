@@ -7,10 +7,11 @@
  */
 
 template<typename T>
-class T_Range : public Catch::MatcherBase<T> {
+class IsBetweenMatcher : public Catch::MatcherBase<T> {
     T m_begin, m_end;
 public:
-    T_Range( T begin, T end ) : m_begin( begin ), m_end( end ) {}
+    virtual ~IsBetweenMatcher() {}
+    IsBetweenMatcher( T begin, T end ) : m_begin( begin ), m_end( end ) {}
 
     virtual bool match( T const& i ) const override {
         return i >= m_begin && i <= m_end;
@@ -24,10 +25,11 @@ public:
 };
 
 template<typename T>
-class T_EQUAL_TO : public Catch::MatcherBase<T> {
+class EqualToMatcher : public Catch::MatcherBase<T> {
     T m_value;
 public:
-    T_EQUAL_TO( T value ) : m_value( value ) {}
+    virtual ~EqualToMatcher() {}
+    EqualToMatcher( T value ) : m_value( value ) {}
 
     virtual bool match( T const& i ) const override {
         return i == m_value;
@@ -41,10 +43,11 @@ public:
 };
 
 template<typename T>
-class T_EQUAL_TO<T*> : public Catch::MatcherBase<const T*> {
+class EqualToMatcher<T*> : public Catch::MatcherBase<const T*> {
     T* m_value;
 public:
-    T_EQUAL_TO( T* value ) : m_value( value ) {}
+    virtual ~EqualToMatcher() {}
+    EqualToMatcher( T* value ) : m_value( value ) {}
 
     virtual bool match( const T* i ) const override {
         return i == m_value;
@@ -58,10 +61,11 @@ public:
 };
 
 template<typename T>
-class T_NOT_EQUAL_TO : public Catch::MatcherBase<T> {
+class NotEqualToMatcher : public Catch::MatcherBase<T> {
     T m_value;
 public:
-    T_NOT_EQUAL_TO( T value ) : m_value( value ) {}
+    virtual ~NotEqualToMatcher() {}
+    NotEqualToMatcher( T value ) : m_value( value ) {}
 
     virtual bool match( T const& i ) const override {
         return i != m_value;
@@ -75,10 +79,11 @@ public:
 };
 
 template<typename T>
-class T_NOT_EQUAL_TO<T*> : public Catch::MatcherBase<const T*> {
+class NotEqualToMatcher<T*> : public Catch::MatcherBase<const T*> {
     T* m_value;
 public:
-    T_NOT_EQUAL_TO( T* value ) : m_value( value ) {}
+    virtual ~NotEqualToMatcher() {}
+    NotEqualToMatcher( T* value ) : m_value( value ) {}
 
     virtual bool match( const T* i ) const override {
         return i != m_value;
@@ -92,10 +97,11 @@ public:
 };
 
 template<typename T>
-class T_IS_GREATER_THAN : public Catch::MatcherBase<T> {
+class IsGreaterThanMatcher : public Catch::MatcherBase<T> {
     T m_value;
 public:
-    T_IS_GREATER_THAN( T value ) : m_value( value ) {}
+    virtual ~IsGreaterThanMatcher() {}
+    IsGreaterThanMatcher( T value ) : m_value( value ) {}
 
     virtual bool match( T const& i ) const override {
         return i > m_value;
@@ -109,10 +115,11 @@ public:
 };
 
 template<typename T>
-class T_IS_SMALLER_THAN : public Catch::MatcherBase<T> {
+class IsSmallerThanMatcher : public Catch::MatcherBase<T> {
     T m_value;
 public:
-    T_IS_SMALLER_THAN( T value ) : m_value( value ) {}
+    virtual ~IsSmallerThanMatcher() {}
+    IsSmallerThanMatcher( T value ) : m_value( value ) {}
 
     virtual bool match( T const& i ) const override {
         return i < m_value;
@@ -127,47 +134,47 @@ public:
 
 // The builder functions
 template<typename T>
-inline T_Range<T> IsBetween( T begin, T end ) {
-    return T_Range<T>( begin, end );
+inline IsBetweenMatcher<T> IsBetween( T begin, T end ) {
+    return IsBetweenMatcher<T>( begin, end );
 }
 
 template<typename T>
-inline T_EQUAL_TO<T> IsEqualTo( T value ) {
-    return T_EQUAL_TO<T>( value );
+inline EqualToMatcher<T> IsEqualTo( T value ) {
+    return EqualToMatcher<T>( value );
 }
 
 template<typename T>
-inline T_NOT_EQUAL_TO<T> IsNotEqualTo( T value ) {
-    return T_NOT_EQUAL_TO<T>( value );
+inline NotEqualToMatcher<T> IsNotEqualTo( T value ) {
+    return NotEqualToMatcher<T>( value );
 }
 
 template<typename T>
-inline T_IS_GREATER_THAN<T> IsGreaterThan( T value ) {
-    return T_IS_GREATER_THAN<T>( value );
+inline IsGreaterThanMatcher<T> IsGreaterThan( T value ) {
+    return IsGreaterThanMatcher<T>( value );
 }
 
 template<typename T>
-inline T_IS_SMALLER_THAN<T> IsSmallerThan( T value ) {
-    return T_IS_SMALLER_THAN<T>( value );
+inline IsSmallerThanMatcher<T> IsSmallerThan( T value ) {
+    return IsSmallerThanMatcher<T>( value );
 }
 
 /*
  *  MATCHER MACROS
  */
-#define CHECK_THAT_F(function_, matcher_)                CHECK_THAT(function_ ## _fake, matcher_)
-#define REQUIRE_THAT_F(function_, matcher_)              REQUIRE_THAT(function_ ## _fake, matcher_)
+#define CHECK_THAT_F(function_, matcher_)               CHECK_THAT(function_ ## _fake, matcher_)
+#define REQUIRE_THAT_F(function_, matcher_)             REQUIRE_THAT(function_ ## _fake, matcher_)
 
-#define CHECK_CALLCOUNT(function_, matcher_)             CHECK_THAT(function_ ## _fake.call_count, matcher_)
-#define REQUIRE_CALLCOUNT(function_, matcher_)           CHECK_THAT(function_ ## _fake.call_count, matcher_)
+#define CHECK_CALLCOUNT(function_, matcher_)            CHECK_THAT(function_ ## _fake.call_count, matcher_)
+#define REQUIRE_CALLCOUNT(function_, matcher_)          CHECK_THAT(function_ ## _fake.call_count, matcher_)
 
-#define CHECK_ARG(arg_ function_, matcher_)              CHECK_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
-#define REQUIRE_ARG(arg_ function_, matcher_)            REQUIRE_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
+#define CHECK_ARG(arg_ function_, matcher_)             CHECK_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
+#define REQUIRE_ARG(arg_ function_, matcher_)           REQUIRE_THAT(function_ ## _fake.arg ## arg_ ## _val, matcher_)
 
 /*
  * SETTERS
  */
- #define SET_RETURN(function_, value_)    function_ ## _fake.return_val = (value_)
- #define SET_RETURNS(function_, array_)   SET_RETURN_SEQ(function, (array_).data(), (array_).size())
+#define SET_RETURN(function_, value_)                   function_ ## _fake.return_val = (value_)
+#define SET_RETURNS(function_, array_)                  SET_RETURN_SEQ(function, (array_).data(), (array_).size())
 
 
 /* 
@@ -267,8 +274,8 @@ inline T_IS_SMALLER_THAN<T> IsSmallerThan( T value ) {
 #define _CHECK_CALLORDER_20(index_, function_, ...)     CHECK_CALLED_IN_ORDER(index_, function_);        \
                                                         _CHECK_CALLORDER_19(index_ + 1, __VA_ARGS__)
 
-#define _CHECK_CALLORDER_N3(index_, N, ...)           _CHECK_CALLORDER_ ## N(index_, __VA_ARGS__)
-#define _CHECK_CALLORDER_N2(index_, N, ...)           _CHECK_CALLORDER_N3(index_, N, __VA_ARGS__)
+#define _CHECK_CALLORDER_N3(index_, N, ...)             _CHECK_CALLORDER_ ## N(index_, __VA_ARGS__)
+#define _CHECK_CALLORDER_N2(index_, N, ...)             _CHECK_CALLORDER_N3(index_, N, __VA_ARGS__)
 
 
 /*  Fail if the function was not called in this particular order.  */
