@@ -30,7 +30,7 @@ class FakeFunctionFramework < Plugin
       f.puts
       f.puts "//=======Definitions of FFF variables====="
       f.puts %{#include "fff.h"}
-      f.puts "DEFINE_FFF_GLOBALS;"
+      f.puts "DEFINE_FFF_GLOBALS"
     end
     
     # cmock = @ceedling[:cmock_builder].cmock.generate_helper(@plugin_root)
