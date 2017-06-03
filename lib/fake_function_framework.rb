@@ -10,16 +10,11 @@ class FakeFunctionFramework < Plugin
     @plugin_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
     # Switch out the cmock_builder with our own.
-    own_cmock =FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
-    @ceedling[:cmock_builder].cmock = own_cmock
+    @ceedling[:cmock_builder].cmock = FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
     
     # Add the path to fff.h to the include paths.
     COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/vendor/fff"
     COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/src"
-
-    # helper = File.join( own_cmock.get_mock_path, 'fff_catch_helper.h')
-    # FileUtils.mkdir_p own_cmock.get_mock_path unless File.file?(helper)
-    # FileUtils.touch(helper)
   end
 
   def post_runner_generate(arg_hash)
@@ -32,8 +27,6 @@ class FakeFunctionFramework < Plugin
       f.puts %{#include "fff.h"}
       f.puts "DEFINE_FFF_GLOBALS"
     end
-    
-    # cmock = @ceedling[:cmock_builder].cmock.generate_helper(@plugin_root)
   end
 
 end # class FakeFunctionFramework
@@ -99,35 +92,4 @@ class FffMockGeneratorForCMock
         f.write(FffMockGenerator.create_mock_source(mock_name, parsed_header, @includes_c_pre_orig_header, @includes_c_post_orig_header))
       end
   end
-
-  # def generate_helper(plugin_root)
-  #   is_catch_enabled = PLUGINS_ENABLED.include?('Catch_4_Ceedling')
-  #   if (is_catch_enabled)
-  #     template_data = CatchHelperTemplateData.new(@mocked_functions.values)
-  #     impl_template = File.read( File.join( plugin_root, 'assets/template.erb') )
-  #     renderer = ERB.new(impl_template, nil, '-')
-
-  #     File.open(File.join( get_mock_path, 'fff_catch_helper.h'), 'w') {|f| f.puts renderer.result(template_data.get_binding) }
-  #   end
-  #end
-
 end
-
-
-# class CatchHelperTemplateData
-#   @mocks = nil
-#   @mock_functions = nil
-#   @decl_string = ''
-#   def initialize(mocks)
-#     @mocks = mocks
-    
-#     @mock_functions = @mocks.flat_map{|val| val[:functions]}
-
-#     @decls = FffMockGenerator.write_function_macros_pure('DECLARE', @mock_functions)
-#   end
-
-#   def get_binding
-#     binding
-#   end
-
-# end
