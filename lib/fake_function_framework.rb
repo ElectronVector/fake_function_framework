@@ -39,7 +39,6 @@ class FffMockGeneratorForCMock
     @cm_config      = CMockConfig.new(options)
     @cm_parser      = CMockHeaderParser.new(@cm_config)
     @silent        = (@cm_config.verbosity < 2)
-    @mocked_functions = {}
     FffMockGenerator.set_framework(@cm_config.framework)
 
     # These are the additional files to include in the mock files.
@@ -74,9 +73,6 @@ class FffMockGeneratorForCMock
 
       # Parse the header file so we know what to mock.
       parsed_header = @cm_parser.parse(module_name, File.read(header_file_to_mock))
-      
-      # Export parse results pers module.
-      @mocked_functions[mock_name] = parsed_header
       
       # Create the directory if it doesn't exist.
       mkdir_p full_path_for_mock.pathmap("%d")
