@@ -60,7 +60,7 @@ class FffMockGeneratorForCMock
       # If a subdirectory has been configured, append it to the mock path.
       mock_path = "#{mock_path}/#{@cm_config.subdir}"
     end
-    mock_path
+    full_path_for_mock = "#{mock_path}/#{mock_name}"
   end
 
   def generate_mock(header_file_to_mock)
@@ -68,8 +68,7 @@ class FffMockGeneratorForCMock
       puts "Creating mock for #{module_name}..." unless @silent
       mock_name = @cm_config.mock_prefix + module_name + @cm_config.mock_suffix
       
-      mock_path = get_mock_path()
-      full_path_for_mock = "#{mock_path}/#{mock_name}"
+      full_path_for_mock = get_mock_path()
 
       # Parse the header file so we know what to mock.
       parsed_header = @cm_parser.parse(module_name, File.read(header_file_to_mock))
