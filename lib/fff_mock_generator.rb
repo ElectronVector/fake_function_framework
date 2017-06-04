@@ -1,7 +1,6 @@
 # Creates mock files from parsed header files that can be linked into applications.
 # The mocks created are compatible with CMock for use with Ceedling.
 require 'fileutils'
-require 'erb'
 
 class FffMockGenerator
   @@framework = :unity
@@ -124,15 +123,7 @@ class FffMockGenerator
 
   def self.write_function_macros(macro_type, parsed_header, output)
     return unless parsed_header.key?(:functions)
-    output.puts write_function_macros_pure(macro_type, parsed_header[:functions]).join("\n")
-  end
-
-  def self.write_function_macros_pure(macro_type, functions)
-    output = []
-    functions.each do |function|
-      output.push("#ifndef GUARD_#{function[:name].upcase}_#{macro_type}")
-      output.push("# define GUARD_#{function[:name].upcase}_#{macro_type}")
-      line = []
+    parsed_header[:functions].each do |function|
       name = function[:name]
       return_type = function[:return][:type]
       if function.has_key? :modifier
@@ -142,42 +133,38 @@ class FffMockGenerator
       arg_count = function[:args].size
 
       # Check for variable arguments.
-      var_arg_suffix = ''
+      var_arg_suffix = ""
       if function[:var_arg]
         # If there are are variable arguments, then we need to add this argument
         # to the count, update the suffix that will get added to the macro.
         arg_count += 1
-        var_arg_suffix = '_VARARG'
+        var_arg_suffix = "_VARARG"
       end
 
       # Generate the correct macro.
       if return_type == 'void'
-        line.push "#{macro_type}_FAKE_VOID_FUNC#{arg_count}#{var_arg_suffix}(#{name}"
+        output.print "#{macro_type}_FAKE_VOID_FUNC#{arg_count}#{var_arg_suffix}(#{name}"
       else
-        line.push "#{macro_type}_FAKE_VALUE_FUNC#{arg_count}#{var_arg_suffix}(#{return_type}, #{name}"
+        output.print "#{macro_type}_FAKE_VALUE_FUNC#{arg_count}#{var_arg_suffix}(#{return_type}, #{name}"
       end
 
       # Append each argument type.
       function[:args].each do |arg|
-        line.push ', '
+        output.print ", "
         if arg[:const?]
-          line.push 'const '
+          output.print "const "
         end
-        line.push arg[:type]
+        output.print "#{arg[:type]}"
       end
 
       # If this argument list ends with a variable argument, add it here at the end.
       if function[:var_arg]
-        line.push ', ...'
+        output.print ", ..."
       end
 
       # Close the declaration.
-      line.push ')'
-      output.push(line.join(''))
-      output.push('#endif')
+      output.puts ")"
     end
-    
-    output
   end
 
 end

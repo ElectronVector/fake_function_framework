@@ -1,6 +1,5 @@
 require 'ceedling/plugin'
 require 'fff_mock_generator'
-require 'erb'
 
 class FakeFunctionFramework < Plugin
 
