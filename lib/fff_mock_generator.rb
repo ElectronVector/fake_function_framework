@@ -1,6 +1,5 @@
 # Creates mock files from parsed header files that can be linked into applications.
 # The mocks created are compatible with CMock for use with Ceedling.
-require 'fileutils'
 
 class FffMockGenerator
   @@framework = :unity
