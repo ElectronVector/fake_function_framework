@@ -81,12 +81,14 @@ class FffMockGeneratorForCMock
 
       # Create the mock header.
       File.open("#{full_path_for_mock}.h", 'w') do |f|
-        f.write(FffMockGenerator.create_mock_header(module_name, mock_name, parsed_header, @includes_h_pre_orig_header, @includes_h_post_orig_header))
+        f.write(FffMockGenerator.create_mock_header(module_name, mock_name, parsed_header, 
+          @includes_h_pre_orig_header, @includes_h_post_orig_header))
       end
 
       # Create the mock source file.
       File.open("#{full_path_for_mock}.c", 'w') do |f|
-        f.write(FffMockGenerator.create_mock_source(mock_name, parsed_header, @includes_c_pre_orig_header, @includes_c_post_orig_header))
+        f.write(FffMockGenerator.create_mock_source(mock_name, parsed_header, 
+          @includes_c_pre_orig_header, @includes_c_post_orig_header))
       end
   end
 end
