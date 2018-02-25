@@ -156,7 +156,7 @@ class FffMockGenerator
       end
 
       # Close the declaration.
-      output.puts ")"
+      output.puts ");"
     end
   end
 
