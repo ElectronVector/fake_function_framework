@@ -13,11 +13,24 @@ To use the plugin you need to 1) get the contents of this repo and 2) configure 
 
 The easiest way to get the source is to just clone this repo into the Ceedling plugin folder for your existing Ceedling project.
 (Don't have a Ceedling project already? [Here are instructions to create one.](http://www.electronvector.com/blog/try-embedded-test-driven-development-right-now-with-ceedling))
-From within `<your-project>/vendor/ceedling/plugins`, run:
 
-`git clone https://github.com/ElectronVector/fake_function_framework.git`
+Take a look inside the **vendor/ceedling/plugins** folder in your project. If you already have a **fake_function_framework** folder you'll need to remove it first. Then run (from the plugins folder):
 
-This will create a new folder named `fake_function_framework` in the plugins folder.
+```
+git clone --recursive https://github.com/ElectronVector/fake_function_framework.git
+```
+
+NOTE: A recursive clone is necessary to get the fff submodule.
+
+This will create a new folder named **fake_function_framework** in the plugins folder.
+
+If you have already done a non-recursive clone you can run this:
+
+```
+git submodule update --init
+```
+
+from inside **vendor/ceedling/plugins/fake_function_framework** in your project.
 
 ### Enable the plug-in.
 
