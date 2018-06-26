@@ -16,4 +16,7 @@ task :integration_test do
     end
 end
 
-task :default => [:spec, :integration_test]
+# Only run the rspec tests by default.
+task :default => [:spec]
+
+task :all => [:spec, :integration_test]
