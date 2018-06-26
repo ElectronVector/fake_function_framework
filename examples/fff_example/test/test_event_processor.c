@@ -72,10 +72,17 @@ test_whenTheModeSelectButtonIsPressed_thenTheDisplayModeIsCycled(void)
     TEST_ASSERT_EQUAL_PTR((void *)display_setModeToMinimum, fff.call_history[0]);
     TEST_ASSERT_EQUAL_PTR((void *)display_setModeToMaximum, fff.call_history[1]);
     TEST_ASSERT_EQUAL_PTR((void *)display_setModeToAverage, fff.call_history[2]);
+
     // or use the helper macros...
     TEST_ASSERT_CALLED_IN_ORDER(0, display_setModeToMinimum);
     TEST_ASSERT_CALLED_IN_ORDER(1, display_setModeToMaximum);
     TEST_ASSERT_CALLED_IN_ORDER(2, display_setModeToAverage);
+
+    // or use this handy macro...
+    TEST_ASSERT_CALLORDER(
+      display_setModeToMinimum,
+      display_setModeToMaximum,
+      display_setModeToAverage);
 }
 
 /*
