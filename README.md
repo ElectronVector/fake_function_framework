@@ -32,20 +32,20 @@ git submodule update --init
 
 from inside **vendor/ceedling/plugins/fake_function_framework** in your project.
 
-### Enable the plug-in.
+### Enable the plug-in
 
 The plug-in is enabled from within your project.yml file.
 
-In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins:
+In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins. Also set the load path to your project vendor folder:
 
 ```yaml
 :plugins:
   :load_paths:
-    - vendor/ceedling/plugins
+    - vendor/ceedling/plugins # <-- Load the plugin from your project folder.
   :enabled:
     - stdout_pretty_tests_report
     - module_generator
-    - fake_function_framework
+    - fake_function_framework # <-- Add to the list of enable plugins.
 ```
 *Note that you could put the plugin source in some other loaction.
 In that case you'd need to add a new path the `:load_paths`.*
@@ -250,12 +250,11 @@ Use still use some of the CMock configuration options for setting things like th
         :includes_c_post_header:
 ```
 
-## Running the tests
+## Plugin developer tools: Running the tests
 
 There are unit and integration tests for the plug-in itself.
 These are run with the default `rake` task.
 The integration test runs the tests for the example project in examples/fff_example.
-For the integration tests to succeed, this repository must be placed in a Ceedling tree in the plugins folder.
 
 ## More examples
 
