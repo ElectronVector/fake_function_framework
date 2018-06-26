@@ -7,10 +7,12 @@ class FakeFunctionFramework < Plugin
   def setup
     # Get the location of this plugin.
     @plugin_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-    puts "Using fake function framework (fff)..."
+    @mock_config = @ceedling[:setupinator].config_hash[:cmock]
+    @silent        = (@mock_config[:verbosity] < 2)
+    puts "Using fake function framework (fff)..." unless @silent
 
     # Switch out the cmock_builder with our own.
-    @ceedling[:cmock_builder].cmock = FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
+    @ceedling[:cmock_builder].cmock = FffMockGeneratorForCMock.new(@mock_config)
 
     # Add the path to fff.h to the include paths.
     COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/vendor/fff"
@@ -23,9 +25,9 @@ class FakeFunctionFramework < Plugin
     # all mocks linked into the test.
     File.open(arg_hash[:runner_file], 'a') do |f|
       f.puts
-      f.puts "//=======Defintions of FFF variables====="
+      f.puts "//=======Definitions of FFF variables====="
       f.puts %{#include "fff.h"}
-      f.puts "DEFINE_FFF_GLOBALS;"
+      f.puts "DEFINE_FFF_GLOBALS"
     end
   end
 
@@ -37,6 +39,7 @@ class FffMockGeneratorForCMock
     @cm_config      = CMockConfig.new(options)
     @cm_parser      = CMockHeaderParser.new(@cm_config)
     @silent        = (@cm_config.verbosity < 2)
+    FffMockGenerator.set_framework(@cm_config.framework)
 
     # These are the additional files to include in the mock files.
     @includes_h_pre_orig_header  = (@cm_config.includes || @cm_config.includes_h_pre_orig_header || []).map{|h| h =~ /</ ? h : "\"#{h}\""}
@@ -51,20 +54,25 @@ class FffMockGeneratorForCMock
     end
   end
 
-  def generate_mock (header_file_to_mock)
+  def get_mock_path(mock_name)
+    mock_path = @cm_config.mock_path
+    if @cm_config.subdir
+      # If a subdirectory has been configured, append it to the mock path.
+      mock_path = "#{mock_path}/#{@cm_config.subdir}"
+    end
+    full_path_for_mock = "#{mock_path}/#{mock_name}"
+  end
+
+  def generate_mock(header_file_to_mock)
       module_name = File.basename(header_file_to_mock, '.h')
       puts "Creating mock for #{module_name}..." unless @silent
       mock_name = @cm_config.mock_prefix + module_name + @cm_config.mock_suffix
-      mock_path = @cm_config.mock_path
-      if @cm_config.subdir
-          # If a subdirectory has been configured, append it to the mock path.
-          mock_path = "#{mock_path}/#{@cm_config.subdir}"
-      end
-      full_path_for_mock = "#{mock_path}/#{mock_name}"
+      
+      full_path_for_mock = get_mock_path(mock_name)
 
       # Parse the header file so we know what to mock.
       parsed_header = @cm_parser.parse(module_name, File.read(header_file_to_mock))
-
+      
       # Create the directory if it doesn't exist.
       mkdir_p full_path_for_mock.pathmap("%d")
 
@@ -83,5 +91,4 @@ class FffMockGeneratorForCMock
           @includes_c_pre_orig_header, @includes_c_post_orig_header))
       end
   end
-
 end

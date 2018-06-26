@@ -2,9 +2,13 @@
 # The mocks created are compatible with CMock for use with Ceedling.
 
 class FffMockGenerator
+  @@framework = :unity
 
-  def self.create_mock_header(module_name, mock_name, parsed_header, pre_includes=nil,
-    post_includes=nil)
+  def self.set_framework(framework)
+    @@framework = framework
+  end
+
+  def self.create_mock_header(module_name, mock_name, parsed_header, pre_includes=nil, post_includes=nil)
     output = StringIO.new
     write_opening_include_guard(mock_name, output)
     output.puts
@@ -46,8 +50,10 @@ class FffMockGenerator
 
   def self.write_header_includes(module_name, output)
     output.puts %{#include "fff.h"}
-    output.puts %{#include "fff_unity_helper.h"}
+    output.puts %{#include "fff_#{@@framework.to_s}_helper.h"}
+    output.puts 'FFF_EXTERN_C'
     output.puts %{#include "#{module_name}.h"}
+    output.puts 'FFF_END_EXTERN_C'
   end
 
   def self.write_typedefs(parsed_header, output)
@@ -156,7 +162,7 @@ class FffMockGenerator
       end
 
       # Close the declaration.
-      output.puts ");"
+      output.puts ")"
     end
   end
 
