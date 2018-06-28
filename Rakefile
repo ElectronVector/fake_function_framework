@@ -41,15 +41,18 @@ end
 
 desc "Run integration test on example"
 task :integration_test do
+# Remove any exsiting build files.
+  rm_rf "build"
+
   # Create a new build folder.
   mkdir_p "build"
+  run_integration_test
 
-  begin
-    run_integration_test
-  ensure
-    # Remove build files, even if the build fails.
-    rm_rf "build"
-  end
+end
+
+desc "Clean build"
+task :clean do
+  rm_rf "build"
 end
 
 # Only run the rspec tests by default.

@@ -47,16 +47,16 @@ describe "FffMockGenerator.create_mock_source" do
 
   context "when there are multiple functions," do
     let(:mock_source) {
-      parsed_header = create_cmock_style_parsed_header(
-        [ {:name => 'a_function', :return_type => 'int', :args => ['char *']},
-          {:name => 'another_function', :return_type => 'void'},
-          {:name => 'three', :return_type => 'bool', :args => ['float', 'int']}
-        ])
+      parsed_header = parse_header("display", %q(
+        int a_function(char * str);
+        void another_function();
+        bool three (float a, int b);
+      ))
       FffMockGenerator.create_mock_source("mock_display", parsed_header)
     }
     it "then the generated file contains the first fake function definition" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VALUE_FUNC1(int, a_function, char *);"
+        "DEFINE_FAKE_VALUE_FUNC1(int, a_function, char*);"
       )
     end
     it "then the generated file contains the second fake function definition" do
@@ -85,36 +85,26 @@ describe "FffMockGenerator.create_mock_source" do
   context "when there is a void function with variable arguments and " +
           "additional arguments" do
     let(:mock_source){
-      parsed_header = {}
-      parsed_header[:functions] = [{
-        :name => "function_with_var_args",
-        :return => {:type => "void"},
-        :var_arg => "...",
-        :args => [{:type => 'char *'}, {:type => 'int'}]
-      }]
+      parsed_header = parse_header("display",
+        "void function_with_var_args(char * c, int value, ...)")
       FffMockGenerator.create_mock_source("mock_display", parsed_header)
     }
     it "then the generated file contains the vararg definition" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VOID_FUNC3_VARARG(function_with_var_args, char *, int, ...)"
+        "DEFINE_FAKE_VOID_FUNC3_VARARG(function_with_var_args, char*, int, ...)"
       )
     end
   end
 
   context "when there is a function with a pointer to a const value" do
     let(:mock_source){
-      parsed_header = {}
-      parsed_header[:functions] = [{
-        :name => "const_test_function",
-        :return => {:type => "void"},
-        :args => [{:type => "char *", :name => "a", :ptr? => false, :const? => true},
-                  {:type => "char *", :name => "b", :ptr? => false, :const? => false}]
-      }]
+      parsed_header = parse_header("display",
+        "void const_test_function(const char * a, char * b)")
       FffMockGenerator.create_mock_source("mock_display", parsed_header)
     }
     it "then the generated file contains the correct const argument in the declaration" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VOID_FUNC2(const_test_function, const char *, char *)"
+        "DEFINE_FAKE_VOID_FUNC2(const_test_function, const char*, char*)"
       )
     end
   end
