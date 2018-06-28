@@ -203,37 +203,33 @@ describe "FffMockGenerator.create_mock_header" do
 
   context "when there are constant arguments" do
     it "works for a constant value" do
-      mock_header = parse_and_generate_header(
+      expect(parse_and_generate_header(
         "void a_function(const int a)"
-      )
-      expect(mock_header).to include(
+      )).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
       )
     end
 
     it "works for a constant value with const reversed" do
-      mock_header = parse_and_generate_header(
+      expect(parse_and_generate_header(
         "void a_function(int const a)"
-      )
-      expect(mock_header).to include(
+      )).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
       )
     end
 
     it "works for a variable pointer to a const value" do
-      mock_header = parse_and_generate_header(
+      expect(parse_and_generate_header(
         "void a_function(const int * a)"
-      )
-      expect(mock_header).to include(
+      )).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int*)"
       )
     end
 
     it "works for a variable pointer to a const char" do
-      mock_header = parse_and_generate_header(
+      expect(parse_and_generate_header(
         "void a_function(const char * a)"
-      )
-      expect(mock_header).to include(
+      )).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const char*)"
       )
     end
