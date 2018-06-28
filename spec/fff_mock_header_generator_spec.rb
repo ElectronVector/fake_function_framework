@@ -124,8 +124,7 @@ describe "FffMockGenerator.create_mock_header" do
         int a_function(char * str);
         void another_function();
         bool three (float a, int b);
-      )
-      )
+      ))
       FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
     }
     it "then the generated file contains the first fake function declaration" do
