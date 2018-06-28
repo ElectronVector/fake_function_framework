@@ -196,14 +196,15 @@ describe "FffMockGenerator.create_mock_header" do
     end
   end
 
-  context "when there is a function with a pointer to a const value" do
+  context "when there is a function with a pointer to a const char value" do
     let(:mock_header){
-      parsed_header = parse_header("display", "void const_test_function(const char * a, char * b)")
+      parsed_header = parse_header("display",
+        "void a_function(const char * a)")
       FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
     }
     it "then the generated file contains the correct const argument in the declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VOID_FUNC2(const_test_function, const char*, char*)"
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const char*)"
       )
     end
   end
