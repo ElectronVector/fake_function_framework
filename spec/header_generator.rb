@@ -12,6 +12,12 @@ def parse_header(module_name, source)
   cm_parser.parse(module_name, source)
 end
 
+# Do CMock parsing and FFF generation in one step.
+def parse_and_generate_header (source)
+  parsed_header = parse_header("module", source)
+  FffMockGenerator.create_mock_header("module", "mock_module", parsed_header)
+end
+
 # Create a CMock-style parsed header hash. This the type of hash created by
 # CMock when parsing header files for automock generation. It contains all of
 # includes, typedefs and functions (with return types and arguments) parsed from

@@ -2,11 +2,6 @@ require 'stringio'
 require 'fff_mock_generator.rb'
 require 'header_generator.rb'
 
-def parse_and_generate_header (source)
-  parsed_header = parse_header("module", source)
-  FffMockGenerator.create_mock_header("module", "mock_module", parsed_header)
-end
-
 # Test the contents of the .h file created for the mock.
 describe "FffMockGenerator.create_mock_header" do
 
@@ -223,6 +218,14 @@ describe "FffMockGenerator.create_mock_header" do
         "void a_function(const int * a)"
       )).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int*)"
+      )
+    end
+
+    it "works for a variable pointer to a const value with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(int const * a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, int const*)"
       )
     end
 
