@@ -148,6 +148,11 @@ class FffMockGenerator
           output.print "const "
         end
         output.print "#{arg[:type]}"
+
+        # Append const for constant pointer types.
+        if arg[:const_ptr?]
+          output.print " const"
+        end
       end
 
       # If this argument list ends with a variable argument, add it here at the end.
