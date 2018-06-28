@@ -2,6 +2,11 @@ require 'stringio'
 require 'fff_mock_generator.rb'
 require 'header_generator.rb'
 
+def parse_and_generate_header (source)
+  parsed_header = parse_header("module", source)
+  FffMockGenerator.create_mock_header("module", "mock_module", parsed_header)
+end
+
 # Test the contents of the .h file created for the mock.
 describe "FffMockGenerator.create_mock_header" do
 
@@ -196,52 +201,38 @@ describe "FffMockGenerator.create_mock_header" do
     end
   end
 
-  context "when there is a function with a const argument" do
-    let(:mock_header){
-      parsed_header = parse_header("display",
-        "void a_function(const int  a)")
-      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
+  context "when there are constant arguments" do
+    it "works for a constant value" do
+      mock_header = parse_and_generate_header(
+        "void a_function(const int a)"
+      )
       expect(mock_header).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
       )
     end
-  end
 
-  context "when there is a function with a const argument with const position reversed" do
-    let(:mock_header){
-      parsed_header = parse_header("display",
-        "void a_function(int const a)")
-      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
+    it "works for a constant value with const reversed" do
+      mock_header = parse_and_generate_header(
+        "void a_function(int const a)"
+      )
       expect(mock_header).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
       )
     end
-  end
 
-  context "when there is a function with a variable pointer to a const value argument" do
-    let(:mock_header){
-      parsed_header = parse_header("display",
-        "void a_function(const int * a)")
-      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
+    it "works for a variable pointer to a const value" do
+      mock_header = parse_and_generate_header(
+        "void a_function(const int * a)"
+      )
       expect(mock_header).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const int*)"
       )
     end
-  end
 
-  context "when there is a function with a pointer to a const char value" do
-    let(:mock_header){
-      parsed_header = parse_header("display",
-        "void a_function(const char * a)")
-      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
+    it "works for a variable pointer to a const char" do
+      mock_header = parse_and_generate_header(
+        "void a_function(const char * a)"
+      )
       expect(mock_header).to include(
         "DECLARE_FAKE_VOID_FUNC1(a_function, const char*)"
       )
