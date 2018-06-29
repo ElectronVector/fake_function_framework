@@ -350,6 +350,16 @@ describe "FffMockGenerator.create_mock_header" do
       end
   end
 
+  context "when there are constant return values" do
+    it "fixes issue #3" do
+      expect(parse_and_generate_header(
+        "char * const bar_return_const_ptr(int one);)"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC1(char* const, bar_return_const_ptr, int)"
+      )
+    end
+  end
+
   context "when there is a function that returns a const pointer" do
     let(:mock_header){
       parsed_header = parse_header("display", "const char * return_const_pointer_test_function(int value)")
