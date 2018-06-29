@@ -309,6 +309,14 @@ describe "FffMockGenerator.create_mock_header" do
       )
     end
 
+    it "works for a variable double pointer to a const char with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(char const ** a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char const**)"
+      )
+    end
+
   end
 
   context "when there is a function that returns a const pointer" do
