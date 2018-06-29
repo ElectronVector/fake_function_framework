@@ -144,7 +144,7 @@ class FffMockGenerator
       # Append each argument type.
       function[:args].each do |arg|
         output.print ", "
-        if arg[:const?] && !arg[:ptr?] && !arg[:type].include?("char")
+        if arg[:const?] && !arg[:ptr?] && !arg[:type].include?("const char")
           output.print "const "
         end
         output.print "#{arg[:type]}"
