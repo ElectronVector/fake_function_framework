@@ -1,5 +1,6 @@
 require 'ceedling/plugin'
 require 'fff_mock_generator'
+require 'fff_header_parser'
 
 class FakeFunctionFramework < Plugin
 

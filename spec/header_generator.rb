@@ -1,8 +1,8 @@
 # These are copies of the classes used from CMock to parse header files. We
 # have copies of them here so that we can test the fff plugin without needing
 # the rest of Ceedling.
-require 'support/cmock_config.rb'
-require 'support/cmock_header_parser.rb'
+require 'fff_config.rb'
+require 'fff_header_parser.rb'
 
 # Parse a header file from source using the copy of the CMockHeaderParser in the
 # support folder.
