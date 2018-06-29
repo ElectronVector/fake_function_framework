@@ -10,4 +10,15 @@ void f(int*param6);
 void g(int param7);
 void h(const int param8);
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+typedef struct {
+  uint8_t address;
+  bool pressed;
+}Button;
+
+void Button_pollAll(Button * const *, size_t);
+
 #endif // _CONST_MODULE_H

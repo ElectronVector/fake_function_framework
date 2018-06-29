@@ -340,6 +340,14 @@ describe "FffMockGenerator.create_mock_header" do
           "DECLARE_FAKE_VOID_FUNC1(a_function, char const** const)"
         )
       end
+
+      it "fixes issue #11" do
+        expect(parse_and_generate_header(
+          "void Button_pollAll(Button * const *, size_t);"
+        )).to include(
+          "DECLARE_FAKE_VOID_FUNC2(Button_pollAll, Button* const*, size_t)"
+        )
+      end
   end
 
   context "when there is a function that returns a const pointer" do
