@@ -10,6 +10,14 @@ void f(int*param6);
 void g(int param7);
 void h(const int param8);
 
+const char * i();
+char const * j();
+const int * k();
+int const * l();
+
+int * const m();
+char * const n();
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
