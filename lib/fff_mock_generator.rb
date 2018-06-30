@@ -119,9 +119,13 @@ class FffMockGenerator
     parsed_header[:functions].each do |function|
       name = function[:name]
       return_type = function[:return][:type]
-      if function.has_key? :modifier
-          # Prepend any modifier. If there isn't one, trim any leading whitespace.
-          return_type = "#{function[:modifier]} #{return_type}".lstrip
+      
+      if function[:return][:const?] && !function[:return][:ptr?] &&
+        !(function[:return][:type].include?("const char") || function[:return][:type].include?("char const"))
+        return_type = "const " + return_type
+      end
+      if function[:return][:const_ptr?]
+        return_type += " const"
       end
       arg_count = function[:args].size
 
