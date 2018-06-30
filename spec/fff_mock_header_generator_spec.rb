@@ -353,9 +353,41 @@ describe "FffMockGenerator.create_mock_header" do
   context "when there are constant return values" do
     it "fixes issue #3" do
       expect(parse_and_generate_header(
-        "char * const bar_return_const_ptr(int one);)"
+        "char * const bar_return_const_ptr(int one);"
       )).to include(
           "DECLARE_FAKE_VALUE_FUNC1(char* const, bar_return_const_ptr, int)"
+      )
+    end
+
+    it "works with a pointer to a const char" do
+      expect(parse_and_generate_header(
+        "const char * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(const char*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const char with alternate const position" do
+      expect(parse_and_generate_header(
+        "char const * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(char const*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const int" do
+      expect(parse_and_generate_header(
+        "const int * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(const int*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const int with alternate const position" do
+      expect(parse_and_generate_header(
+        "int const * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(int const*, a_function)"
       )
     end
   end
