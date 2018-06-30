@@ -196,14 +196,198 @@ describe "FffMockGenerator.create_mock_header" do
     end
   end
 
-  context "when there is a function with a pointer to a const value" do
-    let(:mock_header){
-      parsed_header = parse_header("display", "void const_test_function(const char * a, char * b)")
-      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
-      expect(mock_header).to include(
-        "DECLARE_FAKE_VOID_FUNC2(const_test_function, const char*, char*)"
+  context "when there are constant arguments" do
+    it "works for a constant value" do
+      expect(parse_and_generate_header(
+        "void a_function(const int a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
+      )
+    end
+
+    it "works for a constant value with const reversed" do
+      expect(parse_and_generate_header(
+        "void a_function(int const a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const int)"
+      )
+    end
+
+    it "works for a variable pointer to a const value" do
+      expect(parse_and_generate_header(
+        "void a_function(const int * a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const int*)"
+      )
+    end
+
+    it "works for a variable pointer to a const value with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(int const * a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, int const*)"
+      )
+    end
+
+    it "works for a constant pointer to a variable value" do
+      expect(parse_and_generate_header(
+        "void a_function(int * const a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, int* const)"
+      )
+    end
+
+    it "works for a constant pointer to a constant value" do
+      expect(parse_and_generate_header(
+        "void a_function(const int * const a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const int* const)"
+      )
+    end
+
+    it "works for a constant pointer to a constant value with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(int const * const a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, int const* const)"
+      )
+    end
+
+    it "works for a const char" do
+      expect(parse_and_generate_header(
+        "void a_function(const char a)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC1(a_function, const char)"
+      )
+    end
+
+    it "works for a variable pointer to a const char" do
+      expect(parse_and_generate_header(
+        "void a_function(const char * a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, const char*)"
+      )
+    end
+
+    it "works for a variable pointer to a const char with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(char const * a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char const*)"
+      )
+    end
+
+    it "works for a const pointer to a variable char" do
+      expect(parse_and_generate_header(
+        "void a_function(char * const a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char* const)"
+      )
+    end
+
+    it "works for a const pointer to a const char" do
+      expect(parse_and_generate_header(
+        "void a_function(const char * const a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, const char* const)"
+      )
+    end
+
+    it "works for a const pointer to a const char with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(char const * const a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char const* const)"
+      )
+    end
+
+    it "works for a variable double pointer to a const char" do
+      expect(parse_and_generate_header(
+        "void a_function(const char ** a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, const char**)"
+      )
+    end
+
+    it "works for a variable double pointer to a const char with alternate const placement" do
+      expect(parse_and_generate_header(
+        "void a_function(char const ** a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char const**)"
+      )
+    end
+
+    it "works for a const double pointer to a variable char" do
+      expect(parse_and_generate_header(
+        "void a_function(char ** const a)"
+      )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char** const)"
+      )
+    end
+
+      it "works for a const double pointer to a const char" do
+        expect(parse_and_generate_header(
+          "void a_function(const char ** const a)"
+        )).to include(
+            "DECLARE_FAKE_VOID_FUNC1(a_function, const char** const)"
+        )
+      end
+
+      it "works for a const double pointer to a const char with alternate const placement" do
+        expect(parse_and_generate_header(
+          "void a_function(char const ** const a)"
+        )).to include(
+          "DECLARE_FAKE_VOID_FUNC1(a_function, char const** const)"
+        )
+      end
+
+      it "fixes issue #11" do
+        expect(parse_and_generate_header(
+          "void Button_pollAll(Button * const *, size_t);"
+        )).to include(
+          "DECLARE_FAKE_VOID_FUNC2(Button_pollAll, Button* const*, size_t)"
+        )
+      end
+  end
+
+  context "when there are constant return values" do
+    it "fixes issue #3" do
+      expect(parse_and_generate_header(
+        "char * const bar_return_const_ptr(int one);"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC1(char* const, bar_return_const_ptr, int)"
+      )
+    end
+
+    it "works with a pointer to a const char" do
+      expect(parse_and_generate_header(
+        "const char * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(const char*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const char with alternate const position" do
+      expect(parse_and_generate_header(
+        "char const * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(char const*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const int" do
+      expect(parse_and_generate_header(
+        "const int * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(const int*, a_function)"
+      )
+    end
+
+    it "works with a pointer to a const int with alternate const position" do
+      expect(parse_and_generate_header(
+        "int const * a_function();"
+      )).to include(
+          "DECLARE_FAKE_VALUE_FUNC0(int const*, a_function)"
       )
     end
   end

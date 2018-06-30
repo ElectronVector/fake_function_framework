@@ -1,3 +1,7 @@
+# This is the cmock_config file from the Cmock project.
+# This is used by the FFF plugin, but changes to the CMock header parser were
+# breaking this plugin, so I've frozen a version here.
+
 # ==========================================
 #   CMock Project - Automatic Mock Generation for C
 #   Copyright (c) 2007 Mike Karlesky, Mark VanderVoord, Greg Williams

@@ -114,14 +114,24 @@ class FffMockGenerator
     end
   end
 
+  # Determine if we need to prepend the "const" keyword to an argument or return
+  # type.
+  def self.need_to_prepend_const(type)
+    type[:const?] && !type[:ptr?] &&
+      !(type[:type].include?("const char") || type[:type].include?("char const"))
+  end
+
   def self.write_function_macros(macro_type, parsed_header, output)
     return unless parsed_header.key?(:functions)
     parsed_header[:functions].each do |function|
       name = function[:name]
       return_type = function[:return][:type]
-      if function.has_key? :modifier
-          # Prepend any modifier. If there isn't one, trim any leading whitespace.
-          return_type = "#{function[:modifier]} #{return_type}".lstrip
+
+      if (need_to_prepend_const(function[:return]))
+        return_type = "const " + return_type
+      end
+      if function[:return][:const_ptr?]
+        return_type += " const"
       end
       arg_count = function[:args].size
 
@@ -144,10 +154,15 @@ class FffMockGenerator
       # Append each argument type.
       function[:args].each do |arg|
         output.print ", "
-        if arg[:const?] and !arg[:type].start_with?("const")
+        if need_to_prepend_const(arg)
           output.print "const "
         end
         output.print "#{arg[:type]}"
+
+        # Append const for constant pointer types.
+        if arg[:const_ptr?]
+          output.print " const"
+        end
       end
 
       # If this argument list ends with a variable argument, add it here at the end.

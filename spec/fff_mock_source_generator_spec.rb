@@ -96,15 +96,12 @@ describe "FffMockGenerator.create_mock_source" do
     end
   end
 
-  context "when there is a function with a pointer to a const value" do
-    let(:mock_source){
-      parsed_header = parse_header("display",
-        "void const_test_function(const char * a, char * b)")
-      FffMockGenerator.create_mock_source("mock_display", parsed_header)
-    }
-    it "then the generated file contains the correct const argument in the declaration" do
-      expect(mock_source).to include(
-        "DEFINE_FAKE_VOID_FUNC2(const_test_function, const char*, char*)"
+  context "when there are constant arguments" do
+    it "works for a variable pointer to a const value and another pointer" do
+      expect(parse_and_generate_header(
+        "void a_function(const int * a, int * b)"
+      )).to include(
+        "DECLARE_FAKE_VOID_FUNC2(a_function, const int*, int*)"
       )
     end
   end
