@@ -114,6 +114,8 @@ class FffMockGenerator
     end
   end
 
+  # Determine if we need to prepend the "const" keyword to an argument or return
+  # type.
   def self.need_to_prepend_const(type)
     type[:const?] && !type[:ptr?] &&
       !(type[:type].include?("const char") || type[:type].include?("char const"))
