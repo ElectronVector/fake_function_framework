@@ -114,14 +114,18 @@ class FffMockGenerator
     end
   end
 
+  def self.need_to_prepend_const(type)
+    type[:const?] && !type[:ptr?] &&
+      !(type[:type].include?("const char") || type[:type].include?("char const"))
+  end
+
   def self.write_function_macros(macro_type, parsed_header, output)
     return unless parsed_header.key?(:functions)
     parsed_header[:functions].each do |function|
       name = function[:name]
       return_type = function[:return][:type]
-      
-      if function[:return][:const?] && !function[:return][:ptr?] &&
-        !(function[:return][:type].include?("const char") || function[:return][:type].include?("char const"))
+
+      if (need_to_prepend_const(function[:return]))
         return_type = "const " + return_type
       end
       if function[:return][:const_ptr?]
@@ -148,8 +152,7 @@ class FffMockGenerator
       # Append each argument type.
       function[:args].each do |arg|
         output.print ", "
-        if arg[:const?] && !arg[:ptr?] &&
-          !(arg[:type].include?("const char") || arg[:type].include?("char const"))
+        if need_to_prepend_const(arg)
           output.print "const "
         end
         output.print "#{arg[:type]}"
