@@ -26,7 +26,7 @@ class FakeFunctionFramework < Plugin
       f.puts
       f.puts "//=======Defintions of FFF variables====="
       f.puts %{#include "fff.h"}
-      f.puts "DEFINE_FFF_GLOBALS;"
+      f.puts "DEFINE_FFF_GLOBALS"
     end
   end
 
