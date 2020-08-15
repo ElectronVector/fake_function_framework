@@ -33,6 +33,7 @@
     - src/**
   :support:
     - test/support
+  :libraries: []
 
 :defines:
   # in order to add common defines:
@@ -83,7 +84,7 @@
 
 :plugins:
   :load_paths:
-    - "./vendor/ceedling/plugins"
+    - "../../.."
   :enabled:
     - stdout_pretty_tests_report
     - module_generator

@@ -11,6 +11,7 @@ end
 FFF_PLUGIN_DIR = "build/integration_test/vendor/ceedling/plugins/fake_function_framework"
 
 def run_integration_test
+  sh "ceedling version"
   chdir "build" do
     # Create a new Ceedling project.
     sh "ceedling new integration_test"
