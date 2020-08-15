@@ -5,4 +5,4 @@ rvm:
 
 install:
   - gem install rspec
-  - gem install ceedling -v 0.28.2
+  - gem install ceedling -v 0.30.0
