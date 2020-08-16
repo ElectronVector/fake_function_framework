@@ -56,17 +56,17 @@ describe "FffMockGenerator.create_mock_source" do
     }
     it "then the generated file contains the first fake function definition" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VALUE_FUNC1(int, a_function, char*);"
+        "DEFINE_FAKE_VALUE_FUNC1(int, a_function, char*)"
       )
     end
     it "then the generated file contains the second fake function definition" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VOID_FUNC0(another_function);"
+        "DEFINE_FAKE_VOID_FUNC0(another_function)"
       )
     end
     it "then the generated file contains the third fake function definition" do
       expect(mock_source).to include(
-        "DEFINE_FAKE_VALUE_FUNC2(bool, three, float, int);"
+        "DEFINE_FAKE_VALUE_FUNC2(bool, three, float, int)"
       )
     end
     it "then the init function resets all of the fakes" do
