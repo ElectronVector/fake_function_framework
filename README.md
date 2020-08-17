@@ -17,6 +17,14 @@ This plug-in needs to be enabled from within your project.yml file. It is not en
 
 In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins.
 
+```yaml
+:plugins:
+  :enabled:
+    - stdout_pretty_tests_report
+    - module_generator
+    - fake_function_framework # <-- Enable it here.
+```
+
 ### Get the latest version of this plugin
 
 You may want to get the latest source of this plug if the version in your Ceedling release is not up-to-date.
