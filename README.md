@@ -9,34 +9,11 @@ And, when tests fail -- since you get the actual line number of the failure -- i
 
 ## Installing the plug-in
 
-To use the plugin you need to 1) get the contents of this repo and 2) configure your project to use it.
-
-### Get the source
-
-The easiest way to get the source is to just clone this repo into the Ceedling plugin folder for your existing Ceedling project.
-(Don't have a Ceedling project already? [Here are instructions to create one.](http://www.electronvector.com/blog/try-embedded-test-driven-development-right-now-with-ceedling))
-
-Take a look inside the **vendor/ceedling/plugins** folder in your project. If you already have a **fake_function_framework** folder you'll need to remove it first. Then run (from the plugins folder):
-
-```
-git clone --recursive https://github.com/ElectronVector/fake_function_framework.git
-```
-
-NOTE: A recursive clone is necessary to get the fff submodule.
-
-This will create a new folder named **fake_function_framework** in the plugins folder.
-
-If you have already done a non-recursive clone you can run this:
-
-```
-git submodule update --init
-```
-
-from inside **vendor/ceedling/plugins/fake_function_framework** in your project.
+This fff plugin is included with Ceedling, but first it needs to enabled in your project.yml file.
 
 ### Enable the plug-in
 
-The plug-in is enabled from within your project.yml file.
+This plug-in needs to be enabled from within your project.yml file. It is not enabled by default.
 
 In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins. Also set the load path to your project vendor folder:
 
@@ -51,6 +28,42 @@ In the `:plugins` configuration, add `fake_function_framework` to the list of en
 ```
 *Note that you could put the plugin source in some other loaction.
 In that case you'd need to add a new path the `:load_paths`.*
+
+### Get the latest version of this plugin
+
+You may want to get the latest source of this plug if the version in your ceedling release is not up-to-date.
+
+The easiest way to do this is to clone this repo into the Ceedling plugin folder.
+
+Typically Ceedling is used from its gem installation folder, which is where you will want to clone this repo. You can determine where Ceedling is intalled on your machine by running:
+
+```
+$ gem list -d -e ceedling
+
+*** LOCAL GEMS ***
+
+ceedling (0.30.0)
+    Authors: Mark VanderVoord, Michael Karlesky, Greg Williams
+    Homepage: http://throwtheswitch.org/ceedling
+    License: MIT
+    Installed at: /var/lib/gems/2.7.0
+
+    Ceedling is a build automation tool for C unit test suites that
+    packages up Unity, CMock, and Rake-based build management
+    functionality
+```
+
+In this case you would want to install in `/var/lib/gems/2.7.0/gems/ceedling-0.30.0/plugins/fake_function_framework`.
+
+Remove any existing `fake_function_framework` folder and then clone the contents of this repo into it with (run from the `/var/lib/gems/2.7.0/gems/ceedling-0.30.0/plugins` folder):
+
+```
+git clone https://github.com/ElectronVector/fake_function_framework.git
+```
+
+This will create a new folder named `fake_function_framework` in the plugins folder.
+
+Note: If you have an older project with Ceedling running from an installation inside of the project folder, then you'll need to clone into the project `vendor/ceedling/plugins/fake_function_framework` folder instead.
 
 ## How to use it
 
