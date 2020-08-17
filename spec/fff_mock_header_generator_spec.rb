@@ -49,7 +49,7 @@ describe "FffMockGenerator.create_mock_header" do
       end
       it "then the generated header file contains a fake function declaration" do
         expect(mock_header).to include(
-          "DECLARE_FAKE_VOID_FUNC0(display_turnOffStatusLed);"
+          "DECLARE_FAKE_VOID_FUNC0(display_turnOffStatusLed)"
         )
       end
       it "then the generated file ends with a closing include guard" do
@@ -65,7 +65,7 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VALUE_FUNC0(bool, display_isError);"
+        "DECLARE_FAKE_VALUE_FUNC0(bool, display_isError)"
       )
     end
   end
@@ -77,7 +77,7 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VALUE_FUNC0(int, display_isError);"
+        "DECLARE_FAKE_VALUE_FUNC0(int, display_isError)"
       )
     end
   end
@@ -89,7 +89,7 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VOID_FUNC1(display_setVolume, int);"
+        "DECLARE_FAKE_VOID_FUNC1(display_setVolume, int)"
       )
     end
   end
@@ -101,7 +101,7 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VALUE_FUNC1(int, a_function, char*);"
+        "DECLARE_FAKE_VALUE_FUNC1(int, a_function, char*)"
       )
     end
   end
@@ -113,7 +113,7 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VOID_FUNC6(a_function, int, char*, int, int, bool, applesauce);"
+        "DECLARE_FAKE_VOID_FUNC6(a_function, int, char*, int, int, bool, applesauce)"
       )
     end
   end
@@ -129,17 +129,17 @@ describe "FffMockGenerator.create_mock_header" do
     }
     it "then the generated file contains the first fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VALUE_FUNC1(int, a_function, char*);"
+        "DECLARE_FAKE_VALUE_FUNC1(int, a_function, char*)"
       )
     end
     it "then the generated file contains the second fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VOID_FUNC0(another_function);"
+        "DECLARE_FAKE_VOID_FUNC0(another_function)"
       )
     end
     it "then the generated file contains the third fake function declaration" do
       expect(mock_header).to include(
-        "DECLARE_FAKE_VALUE_FUNC2(bool, three, float, int);"
+        "DECLARE_FAKE_VALUE_FUNC2(bool, three, float, int)"
       )
     end
   end
