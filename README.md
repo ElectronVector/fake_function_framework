@@ -9,7 +9,7 @@ And, when tests fail -- since you get the actual line number of the failure -- i
 
 ## Installing the plug-in
 
-This fff plugin is included with Ceedling, but first it needs to enabled in your project.yml file.
+This fff plugin should already be included with your Ceedling installation, but to use it on a project you first need to enable it in your project.yml file.
 
 ### Enable the plug-in
 
@@ -63,7 +63,31 @@ git clone https://github.com/ElectronVector/fake_function_framework.git
 
 This will create a new folder named `fake_function_framework` in the plugins folder.
 
-Note: If you have an older project with Ceedling running from an installation inside of the project folder, then you'll need to clone into the project `vendor/ceedling/plugins/fake_function_framework` folder instead.
+#### Installing it somewhere else
+
+You could also install it somewhere else on your machine and tell Ceedling where it is in the project.yml file with the `:load_paths:` setting:
+
+```yaml
+:plugins:
+  :load_paths:
+    - /some/other/place/for/plugins # <-- Your custom path.
+  :enabled:
+    - stdout_pretty_tests_report
+    - module_generator
+    - fake_function_framework
+```
+
+#### Using with Ceedling installed in the project
+
+If you have an older project with Ceedling running from an installation inside of the project folder, then you'll need to clone into the project `vendor/ceedling/plugins/fake_function_framework` folder instead.
+
+You'll also need to set the load path correctly for this situation.
+
+```yaml
+:plugins:
+  :load_paths:
+    - vendor/ceedling/plugins # <-- Your project plugin folder.
+```
 
 ## How to use it
 
