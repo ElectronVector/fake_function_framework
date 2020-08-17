@@ -15,23 +15,11 @@ This fff plugin should already be included with your Ceedling installation, but 
 
 This plug-in needs to be enabled from within your project.yml file. It is not enabled by default.
 
-In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins. Also set the load path to your project vendor folder:
-
-```yaml
-:plugins:
-  :load_paths:
-    - vendor/ceedling/plugins # <-- Load the plugin from your project folder.
-  :enabled:
-    - stdout_pretty_tests_report
-    - module_generator
-    - fake_function_framework # <-- Add to the list of enable plugins.
-```
-*Note that you could put the plugin source in some other loaction.
-In that case you'd need to add a new path the `:load_paths`.*
+In the `:plugins` configuration, add `fake_function_framework` to the list of enabled plugins.
 
 ### Get the latest version of this plugin
 
-You may want to get the latest source of this plug if the version in your ceedling release is not up-to-date.
+You may want to get the latest source of this plug if the version in your Ceedling release is not up-to-date.
 
 The easiest way to do this is to clone this repo into the Ceedling plugin folder.
 
