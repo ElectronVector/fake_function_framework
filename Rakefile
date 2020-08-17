@@ -8,6 +8,13 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   # t.rspec_opts << ' more options'
 end
 
+desc "Run the integration tests"
+RSpec::Core::RakeTask.new(:int) do |t|
+  t.pattern = Dir.glob('spec/**/integration_tests.rb')
+  t.rspec_opts = '--format documentation'
+  # t.rspec_opts << ' more options'
+end
+
 FFF_PLUGIN_DIR = "build/integration_test/vendor/ceedling/plugins/fake_function_framework"
 
 def run_integration_test
@@ -20,6 +27,7 @@ def run_integration_test
   # Copy over the example project files.
   cp_r "examples/fff_example/src/.", "build/integration_test/src"
   cp_r "examples/fff_example/test/.", "build/integration_test/test"
+  cp_r "examples/fff_example/options/.", "build/integration_test/options"
   cp "examples/fff_example/project.yml", "build/integration_test"
 
   # Remove the fake_function_framework plugin folder (if it exists) from the new
@@ -36,12 +44,11 @@ def run_integration_test
 
   chdir("build/integration_test") do
       sh "ceedling clobber"
-      sh "ceedling test:all"
   end
 end
 
-desc "Run integration test on example"
-task :integration_test do
+# Prepare to execute the integration tests.
+task :int_test_prep do
 # Remove any exsiting build files.
   rm_rf "build"
 
@@ -56,5 +63,8 @@ task :clean do
   rm_rf "build"
 end
 
-# Only run the rspec tests by default.
-task :default => [:spec, :integration_test]
+# The integration tests require the test environment to be set up.
+task :int => [:int_test_prep]
+
+# Run all the tests by default.
+task :default => [:spec, :int]

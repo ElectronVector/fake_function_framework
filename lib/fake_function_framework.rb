@@ -2,20 +2,75 @@ require 'ceedling/plugin'
 require 'fff_mock_generator'
 require 'fff_header_parser'
 
+# Add the fff include paths if they aren't already there.
+def add_fff_paths_if_necessary()
+  unless COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR.include? "#{@plugin_root}/vendor/fff"
+      COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/vendor/fff"
+    end
+
+    unless COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR.include? "#{@plugin_root}/src"
+      COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/src"
+    end
+end
+
 class FakeFunctionFramework < Plugin
 
   # Set up Ceedling to use this plugin.
   def setup
     # Get the location of this plugin.
     @plugin_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-    puts "Using fake function framework (fff)..."
 
+    # Create our fff mock generator.
+    @fff_generator = FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
+    add_fff_paths_if_necessary()
+  end
+
+  def pre_build
     # Switch out the cmock_builder with our own.
-    @ceedling[:cmock_builder].cmock = FffMockGeneratorForCMock.new(@ceedling[:setupinator].config_hash[:cmock])
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
+  end
 
-    # Add the path to fff.h to the include paths.
-    COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/vendor/fff"
-    COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR << "#{@plugin_root}/src"
+  def post_build
+  end
+
+  def pre_mock_generate(arg_hash)
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
+  end
+
+  def post_mock_generate(arg_hash)
+  end
+
+  def pre_compile_execute(arg_hash)
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
+  end
+
+  def post_compile_execute(arg_hash)
+  end
+
+  def pre_link_execute(arg_hash)
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
+  end
+
+  def post_link_execute(arg_hash)
+  end
+
+  def pre_test_fixture_execute(arg_hash)
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
+  end
+
+  def post_test_fixture_execute(arg_hash)
+  end
+
+  def pre_test(test)
+    # Somewhere between the pre_build step and here the mock generator gets set
+    # back to CMock. So, force it back to use fff before each test.
+    @ceedling[:cmock_builder].cmock = @fff_generator
+    add_fff_paths_if_necessary()
   end
 
   def post_runner_generate(arg_hash)
