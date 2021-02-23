@@ -4,12 +4,12 @@
 class FffMockGenerator
 
   def self.create_mock_header(module_name, mock_name, parsed_header, pre_includes=nil,
-    post_includes=nil)
+    post_includes=nil, mock_folder = "")
     output = StringIO.new
     write_opening_include_guard(mock_name, output)
     output.puts
     write_extra_includes(pre_includes, output)
-    write_header_includes(module_name, output)
+    write_header_includes(module_name, output, mock_folder)
     write_extra_includes(post_includes, output)
     output.puts
     write_typedefs(parsed_header, output)
@@ -23,10 +23,10 @@ class FffMockGenerator
   end
 
   def self.create_mock_source (mock_name, parsed_header, pre_includes=nil,
-    post_includes=nil)
+    post_includes=nil, mock_folder = "")
     output = StringIO.new
     write_extra_includes(pre_includes, output)
-    write_source_includes(mock_name, output)
+    write_source_includes(mock_name, output, mock_folder)
     write_extra_includes(post_includes, output)
     output.puts
     write_function_definitions(parsed_header, output)
@@ -44,10 +44,10 @@ class FffMockGenerator
     output.puts "#define #{mock_name}_H"
   end
 
-  def self.write_header_includes(module_name, output)
+  def self.write_header_includes(module_name, output, mock_folder = "")
     output.puts %{#include "fff.h"}
     output.puts %{#include "fff_unity_helper.h"}
-    output.puts %{#include "#{module_name}.h"}
+    output.puts %{#include "#{mock_folder}#{module_name}.h"}
   end
 
   def self.write_typedefs(parsed_header, output)
@@ -74,10 +74,10 @@ class FffMockGenerator
 
 # Source file generation functions.
 
-  def self.write_source_includes (mock_name, output)
+  def self.write_source_includes (mock_name, output, mock_folder = "")
     output.puts "#include <string.h>"
     output.puts %{#include "fff.h"}
-    output.puts %{#include "#{mock_name}.h"}
+    output.puts %{#include "#{mock_folder}#{mock_name}.h"}
   end
 
   def self.write_function_definitions(parsed_header, output)
