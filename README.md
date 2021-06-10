@@ -54,7 +54,7 @@ In this case you would want to install in `/var/lib/gems/2.7.0/gems/ceedling-0.3
 Remove any existing `fake_function_framework` folder and then clone the contents of this repo into it with (run from the `/var/lib/gems/2.7.0/gems/ceedling-0.30.0/plugins` folder):
 
 ```
-git clone https://github.com/ElectronVector/fake_function_framework.git
+git clone --recurse https://github.com/ElectronVector/fake_function_framework.git
 ```
 
 This will create a new folder named `fake_function_framework` in the plugins folder.
