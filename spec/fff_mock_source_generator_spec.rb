@@ -133,4 +133,17 @@ describe "FffMockGenerator.create_mock_source" do
       )
     end
   end
+
+  context "when mock folder specified" do
+    let(:mock_source) {
+      parsed_source = {}
+      FffMockGenerator.create_mock_source("mock_display", parsed_source,
+        nil, nil, "mock_folder/")
+    }
+    it "then it is used in mock header inclusion" do
+      expect(mock_source).to include(
+        %{#include "mock_folder/mock_display.h"\n}
+      )
+    end
+  end
 end

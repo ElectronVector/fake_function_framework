@@ -444,4 +444,16 @@ describe "FffMockGenerator.create_mock_header" do
     end
   end
 
+  context "when mock folder specified" do
+    let(:mock_header) {
+      parsed_header = {}
+      FffMockGenerator.create_mock_header("display", "mock_display", parsed_header,
+        nil, nil, "mock_folder/")
+    }
+    it "then it is used in original header inclusion" do
+      expect(mock_header).to include(
+        %{#include "mock_folder/display.h"\n}
+      )
+    end
+  end
 end
