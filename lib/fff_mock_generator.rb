@@ -47,7 +47,9 @@ class FffMockGenerator
   def self.write_header_includes(module_name, output)
     output.puts %{#include "fff.h"}
     output.puts %{#include "fff_unity_helper.h"}
+    output.puts 'FFF_EXTERN_C'
     output.puts %{#include "#{module_name}.h"}
+    output.puts 'FFF_END_EXTERN_C'
   end
 
   def self.write_typedefs(parsed_header, output)
