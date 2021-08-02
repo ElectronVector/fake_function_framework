@@ -101,22 +101,30 @@ class FffMockGeneratorForCMock
     @includes_c_post_header      = (@cm_config.includes_c_post_header || []).map{|h| h =~ /</ ? h : "\"#{h}\""}
   end
 
-  def setup_mocks(files)
+  def setup_mocks(files, folder = nil)
     [files].flatten.each do |src|
-      generate_mock (src)
+      generate_mock(src, folder)
     end
   end
 
-  def generate_mock (header_file_to_mock)
+  def generate_mock (header_file_to_mock, folder = nil)
       module_name = File.basename(header_file_to_mock, '.h')
       puts "Creating mock for #{module_name}..." unless @silent
       mock_name = @cm_config.mock_prefix + module_name + @cm_config.mock_suffix
       mock_path = @cm_config.mock_path
-      if @cm_config.subdir
-          # If a subdirectory has been configured, append it to the mock path.
-          mock_path = "#{mock_path}/#{@cm_config.subdir}"
+      
+      mock_folder = if folder && @subdir
+        File.join(@subdir, folder)
+      elsif @subdir
+        @subdir
+      else
+        folder
       end
-      full_path_for_mock = "#{mock_path}/#{mock_name}"
+
+      mock_folder = '' if mock_folder == nil
+      
+      mock_path = File.join("#{mock_path}/#{mock_folder}", '')
+      full_path_for_mock = "#{mock_path}#{mock_name}"
 
       # Parse the header file so we know what to mock.
       parsed_header = @cm_parser.parse(module_name, File.read(header_file_to_mock))
@@ -130,13 +138,13 @@ class FffMockGeneratorForCMock
       # Create the mock header.
       File.open("#{full_path_for_mock}.h", 'w') do |f|
         f.write(FffMockGenerator.create_mock_header(module_name, mock_name, parsed_header,
-          @includes_h_pre_orig_header, @includes_h_post_orig_header))
+          @includes_h_pre_orig_header, @includes_h_post_orig_header, mock_folder))
       end
 
       # Create the mock source file.
       File.open("#{full_path_for_mock}.c", 'w') do |f|
         f.write(FffMockGenerator.create_mock_source(mock_name, parsed_header,
-          @includes_c_pre_orig_header, @includes_c_post_orig_header))
+          @includes_c_pre_orig_header, @includes_c_post_orig_header, mock_folder))
       end
   end
 
